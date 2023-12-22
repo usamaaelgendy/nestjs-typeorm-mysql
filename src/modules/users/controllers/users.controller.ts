@@ -12,6 +12,7 @@ import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
+import { ApiOkResponsePaginated } from '../../../core/decorator/api-ok-response-paginated';
 
 @Controller('users')
 export class UsersController {
@@ -23,13 +24,14 @@ export class UsersController {
   }
 
   @Get('getAllUsers')
-  async getAllUsers(): Promise<UserEntity[]> {
+  @ApiOkResponsePaginated(UserEntity)
+  async getAllUsers(): Promise<[UserEntity[], number]> {
     return await this.usersService.getAllUsers();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOneUserById(+id);
+  @Get('getUserById/:id')
+  async getUserById(@Param('id') id: string) {
+    return await this.usersService.getUserById(+id);
   }
 
   @Patch('updateUser/:id')

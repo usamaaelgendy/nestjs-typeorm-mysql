@@ -31,6 +31,7 @@ class ConfigService {
       migrationsTableName: 'migration',
       migrations: ['src/migration/*.ts'],
       ssl: this.isProduction(),
+      synchronize: !this.isProduction(),
     };
   }
 

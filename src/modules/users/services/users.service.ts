@@ -1,9 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindOneOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -13,29 +13,41 @@ export class UsersService {
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
-    try {
-      const newUser: UserEntity = this.userRepository.create({
-        ...createUserDto,
-        createdAt: new Date(),
-      });
+    // try {
+    const newUser: UserEntity = this.userRepository.create({
+      ...createUserDto,
+      createdAt: new Date(),
+    });
 
-      return await this.userRepository.save(newUser);
-    } catch (error) {
-      console.log(error.code);
-      if (error.code === Error['ER_DUP_ENTRY']) {
-        throw new ConflictException('Email already exists');
-      } else {
-        throw new ConflictException('Error creating user');
-      }
-    }
+    return await this.userRepository.save(newUser);
+    // } catch (error) {
+    //   if (error.code === Error['ER_DUP_ENTRY']) {
+    //     throw new ConflictException('Email already exists');
+    //   } else {
+    //     throw new ConflictException('Error creating user');
+    //   }
+    // }
   }
 
-  getAllUsers(): Promise<UserEntity[]> {
-    return this.userRepository.find({ relations: ['profile', 'posts'] });
+  getAllUsers(): Promise<[UserEntity[], count: number]> {
+    // This way to get all users will return all the users with all the posts and profiles
+    // return this.userRepository.find({ relations: ['profile', 'posts'] });
+    return this.userRepository
+      .createQueryBuilder('users')
+      .leftJoinAndSelect('users.profile', 'profile')
+      .leftJoinAndSelect('users.posts', 'posts')
+      .leftJoinAndSelect('posts.comments', 'comments')
+      .take(1)
+      .getManyAndCount();
   }
 
-  findOneUserById(id: number) {
-    return `This action returns a #${id} user`;
+  getUserById(id: number) {
+    const options: FindOneOptions = {
+      where: { id },
+      relations: ['profile', 'posts', 'posts.comments'],
+    };
+
+    return this.userRepository.findOne(options);
   }
 
   deleteUserById(id: number) {
