@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './modules/users/users.module';
 import { PostsModule } from './modules/posts/posts.module';
-import { typeOrmModuleAsyncOptions } from './core/configs/config';
+import typeorm from './core/configs/typeorm';
 import { CommentsModule } from './modules/comments/comments.module';
 import { join } from 'path';
 import {
@@ -13,10 +13,19 @@ import {
   I18nModule,
   QueryResolver,
 } from 'nestjs-i18n';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
-    TypeOrmModule.forRootAsync(typeOrmModuleAsyncOptions),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      load: [typeorm],
+    }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: async (configService: ConfigService) =>
+        configService.get('typeorm'),
+    }),
     I18nModule.forRoot({
       fallbackLanguage: 'en',
       loaderOptions: {
