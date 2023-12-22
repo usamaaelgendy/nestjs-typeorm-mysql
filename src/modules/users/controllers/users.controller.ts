@@ -13,13 +13,17 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { ApiOkResponsePaginated } from '../../../core/decorator/api-ok-response-paginated';
+import { I18n, I18nContext } from 'nestjs-i18n';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('createUser')
-  async createUser(@Body() createUserDto: CreateUserDto) {
+  async createUser(
+    @I18n() i18n: I18nContext,
+    @Body() createUserDto: CreateUserDto,
+  ) {
     return await this.usersService.createUser(createUserDto);
   }
 

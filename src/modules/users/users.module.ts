@@ -6,10 +6,12 @@ import { UserEntity } from './entities/user.entity';
 import { ProfileService } from './services/profile.service';
 import { ProfileEntity } from './entities/profile.entity';
 import { ProfileController } from './controllers/profile.controller';
+import { EncryptionService } from '../../core/services/encryption.service';
 
 @Module({
+  providers: [UsersService, ProfileService, EncryptionService],
+  exports: [EncryptionService],
   imports: [TypeOrmModule.forFeature([UserEntity, ProfileEntity])],
   controllers: [UsersController, ProfileController],
-  providers: [UsersService, ProfileService],
 })
 export class UsersModule {}

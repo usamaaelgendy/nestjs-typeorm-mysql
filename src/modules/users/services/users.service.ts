@@ -4,16 +4,24 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
+import { I18nService } from 'nestjs-i18n';
 
 @Injectable()
 export class UsersService {
   constructor(
+    private readonly i18n: I18nService,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
 
   async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
     // try {
+
+    // console.log(
+    //   this.i18n.t('translate.testLanguage', {
+    //     args: { lang: I18nContext.current().lang },
+    //   }),
+    // );
     const newUser: UserEntity = this.userRepository.create({
       ...createUserDto,
       createdAt: new Date(),
