@@ -43,6 +43,9 @@ export class UserEntity extends BaseEntity {
   @Column({ nullable: true })
   authStrategy: string;
 
+  @Column({ nullable: true })
+  refreshToken: string;
+
   @OneToOne(() => ProfileEntity)
   @JoinColumn()
   profile: ProfileEntity;

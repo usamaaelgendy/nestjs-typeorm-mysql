@@ -22,3 +22,8 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+// npm run migration:generate -- src/core/config/migrations/23dec2023
+// npm run migration:show
+// npm run migration:revert
+// npm run migration:run
