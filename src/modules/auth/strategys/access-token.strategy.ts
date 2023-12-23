@@ -5,7 +5,7 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import * as process from 'process';
 
 @Injectable()
-export class JwtStrategyService extends PassportStrategy(Strategy) {
+export class AccessTokenStrategy extends PassportStrategy(Strategy) {
   constructor(private readonly authenticationService: AuthService) {
     super({
       secretOrKey: process.env.JWT_SECRET,

@@ -27,3 +27,9 @@ bootstrap();
 // npm run migration:show
 // npm run migration:revert
 // npm run migration:run
+
+// console.log(
+//   this.i18n.t('translate.testLanguage', {
+//     args: { lang: I18nContext.current().lang },
+//   }),
+// );

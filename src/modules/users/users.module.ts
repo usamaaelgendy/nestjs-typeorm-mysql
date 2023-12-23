@@ -10,7 +10,7 @@ import { EncryptionService } from '../../core/services/encryption.service';
 
 @Module({
   providers: [UsersService, ProfileService, EncryptionService],
-  exports: [EncryptionService, UsersService],
+  exports: [UsersService],
   imports: [TypeOrmModule.forFeature([UserEntity, ProfileEntity])],
   controllers: [UsersController, ProfileController],
 })

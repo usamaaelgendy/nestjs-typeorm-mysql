@@ -1,6 +1,4 @@
 import { Injectable } from '@nestjs/common';
-import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
@@ -13,22 +11,6 @@ export class UsersService {
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
   ) {}
-
-  async createUser(
-    createUserDto: CreateUserDto,
-  ): Promise<UserEntity | undefined> {
-    // console.log(
-    //   this.i18n.t('translate.testLanguage', {
-    //     args: { lang: I18nContext.current().lang },
-    //   }),
-    // );
-    const newUser: UserEntity = this.userRepository.create({
-      ...createUserDto,
-      createdAt: new Date(),
-    });
-
-    return await this.userRepository.save(newUser);
-  }
 
   getAllUsers(): Promise<[UserEntity[], count: number]> {
     // This way to get all users will return all the users with all the posts and profiles
@@ -56,16 +38,7 @@ export class UsersService {
       where: { email },
       relations: ['profile', 'posts', 'posts.comments'],
     };
-    console.log(email);
 
     return this.userRepository.findOne(options);
-  }
-
-  deleteUserById(id: number) {
-    return this.userRepository.delete(id);
-  }
-
-  updateUser(id: number, updateUserDto: UpdateUserDto) {
-    return this.userRepository.update(id, updateUserDto);
   }
 }

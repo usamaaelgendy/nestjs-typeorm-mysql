@@ -57,6 +57,6 @@ export class UserEntity extends BaseEntity {
   @BeforeInsert()
   @BeforeUpdate()
   async setPassword() {
-    this.password = await EncryptionService.encryptPassword(this.password);
+    this.password = await EncryptionService.encrypt(this.password);
   }
 }
