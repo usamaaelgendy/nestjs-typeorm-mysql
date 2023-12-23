@@ -3,6 +3,11 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { UserEntity } from '../entities/user.entity';
 import { FindOneOptions, Repository } from 'typeorm';
 import { I18nService } from 'nestjs-i18n';
+import {
+  IPaginationOptions,
+  paginate,
+  Pagination,
+} from 'nestjs-typeorm-paginate';
 
 @Injectable()
 export class UsersService {
@@ -20,7 +25,6 @@ export class UsersService {
       .leftJoinAndSelect('users.profile', 'profile')
       .leftJoinAndSelect('users.posts', 'posts')
       .leftJoinAndSelect('posts.comments', 'comments')
-      .take(1)
       .getManyAndCount();
   }
 
@@ -40,5 +44,19 @@ export class UsersService {
     };
 
     return this.userRepository.findOne(options);
+  }
+
+  // Helper function
+  async getUserPagination(
+    options: IPaginationOptions,
+  ): Promise<Pagination<UserEntity>> {
+    const userDB = this.userRepository
+      .createQueryBuilder('users')
+      .leftJoinAndSelect('users.profile', 'profile')
+      .leftJoinAndSelect('users.posts', 'posts')
+      .leftJoinAndSelect('posts.comments', 'comments')
+      .orderBy('users.id', 'DESC');
+
+    return paginate<UserEntity>(userDB, options);
   }
 }

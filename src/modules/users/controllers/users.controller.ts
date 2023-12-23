@@ -1,5 +1,6 @@
 import {
   Controller,
+  DefaultValuePipe,
   Get,
   Param,
   ParseIntPipe,
@@ -11,23 +12,30 @@ import { UsersService } from '../services/users.service';
 import { UserEntity } from '../entities/user.entity';
 import { ApiOkResponsePaginated } from '../../../core/decorator/api-ok-response-paginated';
 import { AccessTokenGuard } from '../../../core/guards/access-token.guard';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { IPaginationOptions, Pagination } from 'nestjs-typeorm-paginate';
 
 @ApiTags('Users')
 @Controller('users')
+@ApiBearerAuth()
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Get('getAllUsers')
   @UseGuards(AccessTokenGuard)
   @ApiOkResponsePaginated(UserEntity)
+  @ApiOkResponse({ description: 'Get all users' })
   async getAllUsers(
-    @Query('page', ParseIntPipe) page: number,
-    @Query('limit', ParseIntPipe) limit: number,
-  ): Promise<[UserEntity[], number]> {
+    @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
+    @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
+  ): Promise<Pagination<UserEntity>> {
     console.log('page', page);
     console.log('limit', limit);
-    return await this.usersService.getAllUsers();
+    const options: IPaginationOptions = {
+      page,
+      limit,
+    };
+    return await this.usersService.getUserPagination(options);
   }
 
   @Get('getUserById/:id')
