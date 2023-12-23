@@ -14,9 +14,9 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
   ) {}
 
-  async createUser(createUserDto: CreateUserDto): Promise<UserEntity> {
-    // try {
-
+  async createUser(
+    createUserDto: CreateUserDto,
+  ): Promise<UserEntity | undefined> {
     // console.log(
     //   this.i18n.t('translate.testLanguage', {
     //     args: { lang: I18nContext.current().lang },
@@ -28,13 +28,6 @@ export class UsersService {
     });
 
     return await this.userRepository.save(newUser);
-    // } catch (error) {
-    //   if (error.code === Error['ER_DUP_ENTRY']) {
-    //     throw new ConflictException('Email already exists');
-    //   } else {
-    //     throw new ConflictException('Error creating user');
-    //   }
-    // }
   }
 
   getAllUsers(): Promise<[UserEntity[], count: number]> {
@@ -54,6 +47,16 @@ export class UsersService {
       where: { id },
       relations: ['profile', 'posts', 'posts.comments'],
     };
+
+    return this.userRepository.findOne(options);
+  }
+
+  getUserByEmail(email: string) {
+    const options: FindOneOptions = {
+      where: { email },
+      relations: ['profile', 'posts', 'posts.comments'],
+    };
+    console.log(email);
 
     return this.userRepository.findOne(options);
   }

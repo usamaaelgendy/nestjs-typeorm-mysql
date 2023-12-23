@@ -13,7 +13,6 @@ import {
   QueryResolver,
 } from 'nestjs-i18n';
 import { dataSourceOptions } from './core/config/data.source';
-import { AuthenticationModule } from './modules/auth/authentication.module';
 import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
@@ -34,7 +33,6 @@ import { AuthModule } from './modules/auth/auth.module';
     UsersModule,
     PostsModule,
     CommentsModule,
-    AuthenticationModule,
     AuthModule,
   ],
   controllers: [AppController],
