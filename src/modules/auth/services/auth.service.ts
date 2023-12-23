@@ -1,12 +1,15 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { UpdateAuthDto } from '../dto/update-auth.dto';
 import { UserEntity } from '../../users/entities/user.entity';
 import { UsersService } from '../../users/services/users.service';
 import { EncryptionService } from '../../../core/services/encryption.service';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly userService: UsersService) {}
+  constructor(
+    private readonly userService: UsersService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async getUserCredential(
     email: string,
@@ -22,19 +25,11 @@ export class AuthService {
     return user;
   }
 
-  findAll() {
-    return `This action returns all auth`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} auth`;
-  }
-
-  update(id: number, updateAuthDto: UpdateAuthDto) {
-    return `This action updates a #${id} auth`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} auth`;
+  generateToken(user: UserEntity) {
+    return this.jwtService.sign({
+      id: user.id,
+      email: user.email,
+      username: user.username,
+    });
   }
 }

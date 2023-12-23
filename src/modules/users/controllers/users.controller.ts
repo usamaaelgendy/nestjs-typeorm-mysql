@@ -7,6 +7,8 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Request,
+  UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CreateUserDto } from '../dto/create-user.dto';
@@ -14,6 +16,7 @@ import { UpdateUserDto } from '../dto/update-user.dto';
 import { UserEntity } from '../entities/user.entity';
 import { ApiOkResponsePaginated } from '../../../core/decorator/api-ok-response-paginated';
 import { I18n, I18nContext } from 'nestjs-i18n';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 
 @Controller('users')
 export class UsersController {
@@ -36,6 +39,12 @@ export class UsersController {
   @Get('getUserById/:id')
   async getUserById(@Param('id') id: string) {
     return await this.usersService.getUserById(+id);
+  }
+
+  @Get('getUserByToken')
+  @UseGuards(JwtAuthGuard)
+  async getUserByToken(@Request() req) {
+    return await this.usersService.getUserById(req.user.id);
   }
 
   @Patch('updateUser/:id')
