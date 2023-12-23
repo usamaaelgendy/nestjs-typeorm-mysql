@@ -11,18 +11,35 @@ import { ProfileEntity } from './profile.entity';
 import { PostEntity } from '../../posts/entities/post.entity';
 import { BaseEntity } from '../../../core/entities/base.entity';
 import { EncryptionService } from '../../../core/services/encryption.service';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity({ name: 'users' })
 export class UserEntity extends BaseEntity {
+  @ApiProperty({
+    example: 'u@gmail.com',
+    description: 'Email of the user',
+  })
   @Column({ unique: true })
   email: string;
 
+  @ApiProperty({
+    example: 'Usama',
+    description: 'Username of the user',
+  })
   @Column()
   username: string;
 
+  @ApiProperty({
+    example: '123456',
+    description: 'Password of the user',
+  })
   @Column()
   password: string;
 
+  @ApiProperty({
+    example: 'local',
+    description: 'Auth strategy of the user',
+  })
   @Column({ nullable: true })
   authStrategy: string;
 

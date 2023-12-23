@@ -17,12 +17,25 @@ import { UserEntity } from '../entities/user.entity';
 import { ApiOkResponsePaginated } from '../../../core/decorator/api-ok-response-paginated';
 import { I18n, I18nContext } from 'nestjs-i18n';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import {
+  ApiBadRequestResponse,
+  ApiCreatedResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
+@ApiTags('Users')
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('createUser')
+  @ApiCreatedResponse({
+    type: UserEntity,
+    description: 'The record has been successfully created.',
+  })
+  @ApiBadRequestResponse({
+    description: "User can't be created due to bad request",
+  })
   async createUser(
     @I18n() i18n: I18nContext,
     @Body() createUserDto: CreateUserDto,
@@ -31,6 +44,7 @@ export class UsersController {
   }
 
   @Get('getAllUsers')
+  @UseGuards(JwtAuthGuard)
   @ApiOkResponsePaginated(UserEntity)
   async getAllUsers(): Promise<[UserEntity[], number]> {
     return await this.usersService.getAllUsers();
@@ -48,6 +62,7 @@ export class UsersController {
   }
 
   @Patch('updateUser/:id')
+  @UseGuards(JwtAuthGuard)
   async update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updateUserDto: UpdateUserDto,
