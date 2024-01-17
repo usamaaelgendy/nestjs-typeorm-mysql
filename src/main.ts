@@ -1,23 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { ResponseInterceptor } from './core/interceptor/response-interceptor.service';
+import { initSwagger } from './app.swagger';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe());
   app.useGlobalInterceptors(new ResponseInterceptor());
 
-  const config = new DocumentBuilder()
-    .setTitle('Users API')
-    .setDescription('The Users API description')
-    .setVersion('1.0')
-    .addTag('Users')
-    .addBearerAuth()
-    .build();
-  const document = SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, document);
+  initSwagger(app);
 
   await app.listen(3000);
 }

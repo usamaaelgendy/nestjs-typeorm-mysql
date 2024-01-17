@@ -29,8 +29,6 @@ export class UsersController {
     @Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number,
     @Query('limit', new DefaultValuePipe(1), ParseIntPipe) limit: number,
   ): Promise<Pagination<UserEntity>> {
-    console.log('page', page);
-    console.log('limit', limit);
     const options: IPaginationOptions = {
       page,
       limit,

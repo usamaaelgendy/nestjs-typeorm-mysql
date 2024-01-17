@@ -32,20 +32,7 @@ export class ResponseInterceptor<T>
         };
       }),
       catchError((error) => {
-        // Handle the error here
-        const response = context.switchToHttp().getResponse();
-        const statusCode = response.statusCode || 500;
-
-        return throwError({
-          data: null,
-          message: 'An error occurred.',
-          statusCode,
-          isSuccess: false,
-          error: {
-            errorMessage: error.message || 'Internal Server Error',
-            details: error.stack || null,
-          },
-        });
+        return throwError(error);
       }),
     );
   }
