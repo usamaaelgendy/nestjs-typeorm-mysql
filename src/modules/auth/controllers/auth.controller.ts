@@ -14,6 +14,7 @@ import { AuthService } from '../services/auth.service';
 import { LocalAuthGuard } from '../../../core/guards/local-auth.guard';
 import {
   ApiBadRequestResponse,
+  ApiBody,
   ApiCreatedResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -23,6 +24,7 @@ import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { AccessTokenGuard } from '../../../core/guards/access-token.guard';
 import { UpdateUserDto } from '../../users/dto/update-user.dto';
 import { RefreshTokenGuard } from '../../../core/guards/refresh-token.guard';
+import { LoginDto } from '../dto/login.dto';
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -46,6 +48,11 @@ export class AuthController {
 
   @Post('signIn')
   @UseGuards(LocalAuthGuard)
+  @ApiBody({
+    description: 'Provide email and password for authentication',
+    type: LoginDto,
+    required: true,
+  })
   async signIn(@Request() req) {
     const token: { accessToken: string; refreshToken: string } =
       await this.authService.getTokens(req.user);
