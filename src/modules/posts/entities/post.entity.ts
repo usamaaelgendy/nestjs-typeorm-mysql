@@ -7,10 +7,13 @@ import { CommentEntity } from '../../comments/entities/comment.entity';
 export class PostEntity extends BaseEntity {
   @Column()
   title: string;
+
   @Column()
   description: string;
+
   @Column({ default: 0 })
   status: number;
+
   @ManyToOne(() => UserEntity, (user: UserEntity) => user.posts)
   user: UserEntity;
 

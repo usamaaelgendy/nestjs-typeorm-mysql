@@ -14,6 +14,8 @@ import {
 } from 'nestjs-i18n';
 import { dataSourceOptions } from './core/config/data.source';
 import { AuthModule } from './modules/auth/auth.module';
+import { RolesSeedService } from './common/roles/seed/roles-seed.service';
+import { RolesModule } from './common/roles/roles.module';
 
 @Module({
   imports: [
@@ -34,8 +36,17 @@ import { AuthModule } from './modules/auth/auth.module';
     PostsModule,
     CommentsModule,
     AuthModule,
+    RolesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule {
+  constructor(private readonly seedService: RolesSeedService) {
+    this.seedDatabase();
+  }
+
+  async seedDatabase(): Promise<void> {
+    await this.seedService.seedRoles();
+  }
+}
